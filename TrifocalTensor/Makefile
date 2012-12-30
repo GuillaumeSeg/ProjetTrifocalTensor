@@ -5,7 +5,7 @@ INCLUDES = -I ~/eigen/
 
 CXXFLAGS += $(INCLUDES)
 
-OBJ      = src/MathIO.o src/draw.o src/main.o
+OBJ      = src/MathIO.o src/draw.o src/Tensor.o src/main.o
 RM       = rm -f
 BIN      = bin/trifocal
 DIRNAME  = $(shell basename $$PWD)
@@ -29,8 +29,13 @@ draw.o : draw.cpp draw.hpp
 	@echo "compile MathIO"
 	$(CXX) $(CXXFLAGS) -c $<  
 	@echo "done..."
+	
+Tensor.o : Tensor.cpp Tensor.hpp 
+	@echo "compile Tensor"
+	$(CXX) $(CXXFLAGS) -c $<  
+	@echo "done..."
 
-main.o : main.cpp MathIO.o draw.o
+main.o : main.cpp MathIO.o draw.o Tensor.o
 	@echo "compile main"
 	$(CXX) $(CXXFLAGS) -c $<  
 	@echo "done..."

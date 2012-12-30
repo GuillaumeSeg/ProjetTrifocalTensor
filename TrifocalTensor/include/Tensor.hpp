@@ -6,8 +6,17 @@
 
 class Tensor {
 
-	private:
-		std::vector<float> T(27);
+	public:
+		std::vector<double> T;
+		
+	public:
+		Tensor() {
+			T.reserve(27);
+			for(int i = 0; i < 27; ++i) {
+				T.push_back(0);
+			}
+		}
+		double operator()(int i, int j, int k) const;
 };
 
 #endif

@@ -1,3 +1,15 @@
 #include "../include/Tensor.hpp"
 
 
+#include <iostream>
+#include <vector>
+
+double Tensor::operator()(int i, int j, int k) const {
+	
+	if(k > 2) {
+		return T[3*(k*k + i - 4) + j -1];  // Relation empirique sur les indices du tensor (avec un if seulement)
+	}
+	else {
+		return T[3*(k*k + i - 2) + j -1];
+	}
+}

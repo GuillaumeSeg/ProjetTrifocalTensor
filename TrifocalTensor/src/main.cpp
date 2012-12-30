@@ -3,6 +3,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
+#include "../include/Tensor.hpp"
 #include "../include/MathIO.hpp"
 #include "../include/draw.hpp"
 
