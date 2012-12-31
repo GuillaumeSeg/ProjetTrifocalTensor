@@ -4,6 +4,7 @@
 #include <SDL/SDL_image.h>
 
 #include "../include/Tensor.hpp"
+#include "../include/MatrixA.hpp"
 #include "../include/MathIO.hpp"
 #include "../include/draw.hpp"
 
@@ -196,9 +197,26 @@ int main(int argc, char *argv[]) {
 			kn::loadMatrix(listClique1,"input/listingcliquable/listing1.list");
 			kn::loadMatrix(listClique2,"input/listingcliquable/listing2.list");
 			kn::loadMatrix(listClique3,"input/listingcliquable/listing3.list");
-			std::cout <<"Points de l'image 1 "<< listClique1 << std::endl;
+			imageOffset.x = 0;
+			imageOffset.y = 0;
+			SDL_BlitSurface(image1, NULL, screen, &imageOffset);
+			imageOffset.x = image1->w;
+			SDL_BlitSurface(image2, NULL, screen, &imageOffset);
+			imageOffset.x = image1->w + image2->w;
+			SDL_BlitSurface(image3, NULL, screen, &imageOffset);
+			std::cout <<"Points de l'image 1 " << std::endl;
+			std::cout << listClique1 << std::endl;
+			std::cout <<"Points de l'image 2 " << std::endl;
+			std::cout << listClique2 << std::endl;
+			std::cout <<"Points de l'image 3 " << std::endl;
+			std::cout << listClique3 << std::endl;
+			
+			MatrixXd A = MatrixXd::Zero(comptimg1*4, 27);
+			fillingA(A, listClique1, listClique2, listClique3);
+			
 			finiClic = false;
 		}
+		
 		
 	}
 

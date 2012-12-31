@@ -1,0 +1,9 @@
+#ifndef MATRIXA__HPP
+#define MATRIXA__HPP
+
+
+void fillingA(Eigen::MatrixXd &A, Eigen::MatrixXd &matrixIMG1, Eigen::MatrixXd &matrixIMG2, Eigen::MatrixXd &matrixIMG3);
+
+#endif
+
+
