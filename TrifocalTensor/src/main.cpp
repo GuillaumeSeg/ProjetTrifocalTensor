@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
 	int comptimg1 = 0; // compteur de points cliqués sur l'image 1
 	int comptimg2 = 0; // compteur de points cliqués sur l'image 2
 	int comptimg3 = 0; // compteur de points cliqués sur l'image 3
+	bool finiClic = false;
 	
 	// init SDL image
 	if(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == -1){
@@ -84,9 +85,9 @@ int main(int argc, char *argv[]) {
 	kn::loadMatrix(list3,"input/list3.list");
 	
 	// Creation des matrices de points cliqués
-	/*Eigen::MatrixXd listClique1;
+	Eigen::MatrixXd listClique1;
 	Eigen::MatrixXd listClique2;
-	Eigen::MatrixXd listClique3;*/
+	Eigen::MatrixXd listClique3;
 
 	// save a list
 	kn::saveMatrix(list1,"/tmp/myList.mat");
@@ -180,10 +181,27 @@ int main(int argc, char *argv[]) {
 				}
 				break;
 			}
+			if(e.type == SDL_KEYDOWN) {
+				if(e.key.keysym.sym == SDLK_f) {
+					finiClic = true;
+				}
+			}
 
 
 			// Traitement des autres évenements:
 		}
+		
+		if(finiClic) {
+			// charge la liste de points dans les matrix
+			kn::loadMatrix(listClique1,"input/listingcliquable/listing1.list");
+			kn::loadMatrix(listClique2,"input/listingcliquable/listing2.list");
+			kn::loadMatrix(listClique3,"input/listingcliquable/listing3.list");
+			std::cout <<"Points de l'image 1 "<< listClique1 << std::endl;
+			std::cout <<"Points de l'image 2 "<< listClique2 << std::endl;
+			std::cout <<"Points de l'image 3 "<< listClique3 << std::endl;
+			finiClic = false;
+		}
+		
 	}
 
 	// quit sdl
