@@ -17,6 +17,15 @@ int main(int argc, char *argv[]) {
 	int comptimg2 = 0; // compteur de points cliqués sur l'image 2
 	int comptimg3 = 0; // compteur de points cliqués sur l'image 3
 	bool finiClic = false;
+	bool modeTransfertActif = false;
+	bool pointTransfertChoisiSurImage1 = false;
+	bool pointTransfertChoisiSurImage2 = false;
+	bool pointTransfertChoisiSurImage3 = false;
+	
+	//Points du transfert
+	Eigen::VectorXd pointimg1 = Eigen::VectorXd::Zero(3);
+	Eigen::VectorXd pointimg2 = Eigen::VectorXd::Zero(3);
+	Eigen::VectorXd pointimg3 = Eigen::VectorXd::Zero(3);
 	
 	// init SDL image
 	if(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == -1){
@@ -110,7 +119,6 @@ int main(int argc, char *argv[]) {
 	for(int i=0; i<list3.rows(); ++i)
 		fill_circle(screen, list3(i,0)+image1->w+image2->w, list3(i,1), 3, yellow);
 	
-	
 	//pause();
 	bool done = false;
 	while(!done) {
@@ -130,6 +138,13 @@ int main(int argc, char *argv[]) {
 						comptimg1++;
 						x1 = e.button.x;
 						y1 = e.button.y;
+						if(modeTransfertActif) {
+							pointimg1[0] = x1;
+							pointimg1[1] = y1;
+							pointimg1[2] = 1.0;
+							std::cout << pointimg1[0] <<"-"<< pointimg1[1] <<" img1"<< std::endl;
+							pointTransfertChoisiSurImage1 = true;
+						}
 						std::cout << e.button.x <<"-"<< e.button.y <<" img1"<< std::endl;
 						
 						// On ouvre le fichier listing de points 1 pour pouvoir le remplir.
@@ -147,6 +162,13 @@ int main(int argc, char *argv[]) {
 						comptimg2++;
 						x2 = e.button.x - 400;
 						y2 = e.button.y;
+						if(modeTransfertActif) {
+							pointimg2[0] = x2;
+							pointimg2[1] = y2;
+							pointimg2[2] = 1.0;
+							std::cout << pointimg2[0] <<"-"<< pointimg2[1] <<" img2"<< std::endl;
+							pointTransfertChoisiSurImage2 = true;
+						}
 						std::cout << e.button.x <<"-"<< e.button.y <<" img2"<< std::endl;
 						
 						// On ouvre le fichier listing de points 3 pour pouvoir le remplir.
@@ -164,6 +186,13 @@ int main(int argc, char *argv[]) {
 						comptimg3++;
 						x3 = e.button.x - 800;
 						y3 = e.button.y;
+						if(modeTransfertActif) {
+							pointimg3[0] = x3;
+							pointimg3[1] = y3;
+							pointimg3[2] = 1.0;
+							std::cout << pointimg3[0] <<"-"<< pointimg3[1] <<" img3"<< std::endl;
+							pointTransfertChoisiSurImage3 = true;
+						}
 						std::cout << e.button.x <<"-"<< e.button.y <<" img3"<< std::endl;
 						
 						// On ouvre le fichier listing de points 3 pour pouvoir le remplir.
@@ -215,9 +244,35 @@ int main(int argc, char *argv[]) {
 			MatrixXd A = MatrixXd::Zero(comptimg1*4, 27);
 			
 			fillingA(A, listClique1, listClique2, listClique3);
+			
 			solvingAt(A, tensor);
+			modeTransfertActif = true;
+			
+			
 			
 			finiClic = false;
+		}
+		
+		if(modeTransfertActif) {
+		
+				if(pointTransfertChoisiSurImage1 && pointTransfertChoisiSurImage2) {
+					std::cout << "Mode de Transfert choisi : Retrouver la position sur l'image 3" << std::endl;
+					//transfert();
+					pointTransfertChoisiSurImage1 = false;
+					pointTransfertChoisiSurImage2 = false;
+				}
+				if(pointTransfertChoisiSurImage1 && pointTransfertChoisiSurImage3) {
+					std::cout << "Mode de Transfert choisi : Retrouver la position sur l'image 2" << std::endl;
+					//transfert();
+					pointTransfertChoisiSurImage1 = false;
+					pointTransfertChoisiSurImage3 = false;
+				}
+				if(pointTransfertChoisiSurImage2 && pointTransfertChoisiSurImage3) {
+					std::cout << "Mode de Transfert choisi : Retrouver la position sur l'image 1" << std::endl;
+					//transfert();
+					pointTransfertChoisiSurImage2 = false;
+					pointTransfertChoisiSurImage3 = false;
+				}
 		}
 		
 	}
