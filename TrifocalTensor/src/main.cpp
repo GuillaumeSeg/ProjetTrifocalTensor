@@ -211,8 +211,11 @@ int main(int argc, char *argv[]) {
 			std::cout <<"Points de l'image 3 " << std::endl;
 			std::cout << listClique3 << std::endl;
 			
+			Tensor tensor;
 			MatrixXd A = MatrixXd::Zero(comptimg1*4, 27);
+			
 			fillingA(A, listClique1, listClique2, listClique3);
+			solvingAt(A, tensor);
 			
 			finiClic = false;
 		}

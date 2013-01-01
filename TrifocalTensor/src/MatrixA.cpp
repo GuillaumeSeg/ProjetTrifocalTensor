@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 #include "../Eigen/Dense"
 #include "../include/MatrixA.hpp"
@@ -48,8 +49,24 @@ void fillingA(Eigen::MatrixXd &A, Eigen::MatrixXd &matrixIMG1, Eigen::MatrixXd &
 		}
 	}
 	
-	std::cout << A << std::endl;
+	//std::cout << A << std::endl;
 }
 
+void solvingAt(Eigen::MatrixXd &A, Tensor &t) {
+	using namespace Eigen;
+	
+	VectorXd b = VectorXd::Zero(A.rows());
+	
+	JacobiSVD<MatrixXd> svd(A, ComputeThinU | ComputeThinV);
+	
+	/*std::cout << "Les valeurs singulieres sont triées par ordre decroissant:" << std::endl << svd.singularValues() << std::endl;
+	std::cout << "Matrix V dernière colonne" << std::endl << svd.matrixV().col(26) << std::endl;*/
+	
+	VectorXd x = svd.matrixV().col(26);
+	
+	for(int i = 0; i<x.size(); ++i) {
+		t.T[i] = x[i];
+	}
+}
 
 

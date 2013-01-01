@@ -16,6 +16,7 @@ class Tensor {
 				T.push_back(0);
 			}
 		}
+		
 		double operator()(int i, int j, int k) const;
 };
 
