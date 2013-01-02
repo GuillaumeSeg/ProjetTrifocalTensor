@@ -59,13 +59,14 @@ void solvingAt(Eigen::MatrixXd &A, Tensor &t) {
 	
 	JacobiSVD<MatrixXd> svd(A, ComputeThinU | ComputeThinV);
 	
-	/*std::cout << "Les valeurs singulieres sont triées par ordre decroissant:" << std::endl << svd.singularValues() << std::endl;*/
-	std::cout << "Matrix V dernière colonne" << std::endl << svd.matrixV().col(26) << std::endl;
+	/*std::cout << "Les valeurs singulieres sont triées par ordre decroissant:" << std::endl << svd.singularValues() << std::endl;
+	std::cout << "Matrix V dernière colonne" << std::endl << svd.matrixV().col(26) << std::endl;*/
 	
 	VectorXd x = svd.matrixV().col(26);
 	
 	for(int i = 0; i<x.size(); ++i) {
 		t.T[i] = x[i];
+		std::cout << t(2,2,2) << " - " <<t.T[13] <<std::endl;
 	}
 }
 

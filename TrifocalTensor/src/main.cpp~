@@ -5,6 +5,7 @@
 
 #include "../include/Tensor.hpp"
 #include "../include/MatrixA.hpp"
+#include "../include/Transfert.hpp"
 #include "../include/MathIO.hpp"
 #include "../include/draw.hpp"
 
@@ -26,6 +27,9 @@ int main(int argc, char *argv[]) {
 	Eigen::VectorXd pointimg1 = Eigen::VectorXd::Zero(3);
 	Eigen::VectorXd pointimg2 = Eigen::VectorXd::Zero(3);
 	Eigen::VectorXd pointimg3 = Eigen::VectorXd::Zero(3);
+	
+	//Création du Tensor :
+	Tensor tensor;
 	
 	// init SDL image
 	if(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == -1){
@@ -226,6 +230,7 @@ int main(int argc, char *argv[]) {
 			kn::loadMatrix(listClique1,"input/listingcliquable/listing1.list");
 			kn::loadMatrix(listClique2,"input/listingcliquable/listing2.list");
 			kn::loadMatrix(listClique3,"input/listingcliquable/listing3.list");
+			
 			imageOffset.x = 0;
 			imageOffset.y = 0;
 			SDL_BlitSurface(image1, NULL, screen, &imageOffset);
@@ -233,6 +238,7 @@ int main(int argc, char *argv[]) {
 			SDL_BlitSurface(image2, NULL, screen, &imageOffset);
 			imageOffset.x = image1->w + image2->w;
 			SDL_BlitSurface(image3, NULL, screen, &imageOffset);
+			
 			std::cout <<"Points de l'image 1 " << std::endl;
 			std::cout << listClique1 << std::endl;
 			std::cout <<"Points de l'image 2 " << std::endl;
@@ -240,7 +246,7 @@ int main(int argc, char *argv[]) {
 			std::cout <<"Points de l'image 3 " << std::endl;
 			std::cout << listClique3 << std::endl;
 			
-			Tensor tensor;
+			
 			MatrixXd A = MatrixXd::Zero(comptimg1*4, 27);
 			
 			fillingA(A, listClique1, listClique2, listClique3);
@@ -249,27 +255,32 @@ int main(int argc, char *argv[]) {
 			modeTransfertActif = true;
 			
 			
-			
 			finiClic = false;
 		}
 		
 		if(modeTransfertActif) {
 		
-			if(pointTransfertChoisiSurImage1 && pointTransfertChoisiSurImage2) {
+				if(pointTransfertChoisiSurImage1 && pointTransfertChoisiSurImage2) {
 					std::cout << "Mode de Transfert choisi : Retrouver la position sur l'image 3" << std::endl;
-					//transfert();
+					pointimg3 = transfert(tensor, pointimg1, pointimg2, 3);
+					
+					draw_circle(screen, pointimg3[0]+image1->w+image2->w, pointimg3[1], 3, yellow);
 					pointTransfertChoisiSurImage1 = false;
 					pointTransfertChoisiSurImage2 = false;
 				}
 				if(pointTransfertChoisiSurImage1 && pointTransfertChoisiSurImage3) {
 					std::cout << "Mode de Transfert choisi : Retrouver la position sur l'image 2" << std::endl;
-					//transfert();
+					pointimg2 = transfert(tensor, pointimg1, pointimg3, 2);
+
+					draw_circle(screen, pointimg2[0]+image1->w, pointimg2[1], 3, blue);
 					pointTransfertChoisiSurImage1 = false;
 					pointTransfertChoisiSurImage3 = false;
 				}
 				if(pointTransfertChoisiSurImage2 && pointTransfertChoisiSurImage3) {
 					std::cout << "Mode de Transfert choisi : Retrouver la position sur l'image 1" << std::endl;
-					//transfert();
+					pointimg1 = transfert(tensor, pointimg2, pointimg3, 1);
+					
+					draw_circle(screen, x1, y1, 3, red);
 					pointTransfertChoisiSurImage2 = false;
 					pointTransfertChoisiSurImage3 = false;
 				}
