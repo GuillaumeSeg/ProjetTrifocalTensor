@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <string>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
@@ -13,7 +14,43 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-	
+
+	for(int i=0; i<argc; ++i) {
+		if(strcmp(argv[i],"-h")==0) {
+			cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+			cout << "$$$$$$$$$$$-                                          -$$$$$$$$$$" << endl;
+			cout << "$$$$$$$$$$$-  HOW TO USE THE PROGRAM trifocal tensor  -$$$$$$$$$$" << endl;
+			cout << "$$$$$$$$$$$-                                          -$$$$$$$$$$" << endl;
+			cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+			cout << "$$$$-                                                       -$$$$" << endl;
+			cout << "$$$$-  # if you want to load three lists,                   -$$$$" << endl;
+			cout << "$$$$-    you can push \"c\"                                   -$$$$" << endl;
+			cout << "$$$$-    then the tensor will be calculated automatically   -$$$$" << endl;
+			cout << "$$$$-    with the three lists in the directory              -$$$$" << endl;
+			cout << "$$$$-   \"input/listingchargeable/\"                          -$$$$"<< endl;
+			cout << "$$$$-                                                       -$$$$" << endl;
+			cout << "$$$$-  # if you want to calculate the tensor without        -$$$$" << endl;
+			cout << "$$$$-    loading the lists, you can click as many similar   -$$$$" << endl;
+			cout << "$$$$-    points that you want on the three images           -$$$$" << endl;
+			cout << "$$$$-    (minimum 7 correspondences in order to calculate   -$$$$" << endl;
+			cout << "$$$$-    the tensor)                                        -$$$$" << endl;
+			cout << "$$$$-    and when you have finished, push \"f\"               -$$$$" << endl;
+			cout << "$$$$-                                                       -$$$$" << endl;
+			cout << "$$$$- <> When the tensor is calculated, you can access to   -$$$$" << endl;
+			cout << "$$$$- the transfer mode. You can click two similar points   -$$$$" << endl;
+			cout << "$$$$- on two images (1&2,1&3,2&3), then transfer is made    -$$$$" << endl;
+			cout << "$$$$- and the third point appears on the image that you     -$$$$" << endl;
+			cout << "$$$$- haven't clicked.                                      -$$$$" << endl;
+			cout << "$$$$-                                                       -$$$$" << endl;
+			cout << "$$$$-           THANKS FOR USING TRIFOCAL-TENSOR            -$$$$" << endl;
+			cout << "$$$$-                                                       -$$$$" << endl;
+			cout << "$$$$-                                   by Guillaume SEGADO -$$$$" << endl;
+			cout << "$$$$-                                  and Oceane RENNESSON -$$$$" << endl;
+			cout << "$$$$-                                                       -$$$$" << endl;
+			cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+		}
+	}
+		
 	Uint16 x1,y1,x2,y2,x3,y3;//Points rentrés en cliquant
 	int comptimg1 = 0; // compteur de points cliqués sur l'image 1
 	int comptimg2 = 0; // compteur de points cliqués sur l'image 2
