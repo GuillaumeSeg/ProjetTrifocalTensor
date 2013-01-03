@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
@@ -19,6 +20,7 @@ int main(int argc, char *argv[]) {
 	int comptimg3 = 0; // compteur de points cliqués sur l'image 3
 	bool finiClic = false;
 	bool modeTransfertActif = false;
+	bool modeChargementActif = false;
 	bool pointTransfertChoisiSurImage1 = false;
 	bool pointTransfertChoisiSurImage2 = false;
 	bool pointTransfertChoisiSurImage3 = false;
@@ -86,17 +88,15 @@ int main(int argc, char *argv[]) {
 		listing3.close();
 	} 	
 	else {
-		cerr << "Impossible d'ouvrir la liste 2 !" << endl;
+		cerr << "Impossible d'ouvrir la liste 3 !" << endl;
 	}
 	
 	
-	// load the point lists
+	// load the point lists, listes de points pour le chargement
 	Eigen::MatrixXd list1;
 	Eigen::MatrixXd list2;
 	Eigen::MatrixXd list3;
-	kn::loadMatrix(list1,"input/list1.list");
-	kn::loadMatrix(list2,"input/list2.list");
-	kn::loadMatrix(list3,"input/list3.list");
+	
 	
 	// Creation des matrices de points cliqués
 	Eigen::MatrixXd listClique1;
@@ -104,24 +104,13 @@ int main(int argc, char *argv[]) {
 	Eigen::MatrixXd listClique3;
 
 	// save a list
-	kn::saveMatrix(list1,"/tmp/myList.mat");
+	//kn::saveMatrix(list1,"/tmp/myList.mat");
 
 	// some colors
 	Uint32 red  = 0xffff0000;
 	Uint32 blue = 0xff0000ff;
 	Uint32 yellow = 0xffffff00;
 	
-	// draw points on image1
-	for(int i=0; i<list1.rows(); ++i)
-		fill_circle(screen, list1(i,0), list1(i,1), 3, red);
-
-	// draw points on image2
-	for(int i=0; i<list2.rows(); ++i)
-		fill_circle(screen, list2(i,0)+image1->w, list2(i,1), 3, blue);
-
-	// draw points on image3
-	for(int i=0; i<list3.rows(); ++i)
-		fill_circle(screen, list3(i,0)+image1->w+image2->w, list3(i,1), 3, yellow);
 	
 	//pause();
 	bool done = false;
@@ -138,7 +127,7 @@ int main(int argc, char *argv[]) {
 			}
 			if(e.type == SDL_MOUSEBUTTONDOWN) {
 				if(e.button.button == SDL_BUTTON_LEFT) {
-					if(e.button.x < 400) {
+					if(e.button.x < image1->w) {
 						comptimg1++;
 						x1 = e.button.x;
 						y1 = e.button.y;
@@ -154,7 +143,7 @@ int main(int argc, char *argv[]) {
 						// On ouvre le fichier listing de points 1 pour pouvoir le remplir.
 						ofstream listing1("./input/listingcliquable/listing1.list", ios::out | ios::app);
 						if(listing1) {
-							listing1 << x1 <<" "<< y1 <<" "<<"1"<< endl;
+							listing1 << setprecision(4)<< x1 <<" "<< y1 <<" "<<"1"<< endl;
 							listing1.close();
 						} 	
 						else {
@@ -162,7 +151,7 @@ int main(int argc, char *argv[]) {
 						}
 						fill_circle(screen, x1, y1, 3, red);
 					}
-					if(e.button.x > 399 && e.button.x < 800) {
+					if(e.button.x > (image1->w - 1) && e.button.x < (image1->w+image2->w)) {
 						comptimg2++;
 						x2 = e.button.x - 400;
 						y2 = e.button.y;
@@ -178,7 +167,7 @@ int main(int argc, char *argv[]) {
 						// On ouvre le fichier listing de points 3 pour pouvoir le remplir.
 						ofstream listing2("./input/listingcliquable/listing2.list", ios::out | ios::app);
 						if(listing2) {
-							listing2 << x2 <<" "<< y2 <<" "<<"1"<< endl;
+							listing2 << setprecision(4)<< x2 <<" "<< y2 <<" "<<"1"<< endl;
 							listing2.close();
 						} 	
 						else {
@@ -186,7 +175,7 @@ int main(int argc, char *argv[]) {
 						}
 						fill_circle(screen, x2+image1->w, y2, 3, blue);
 					}
-					if(e.button.x > 799) {
+					if(e.button.x > (image1->w + image2->w - 1)) {
 						comptimg3++;
 						x3 = e.button.x - 800;
 						y3 = e.button.y;
@@ -202,7 +191,7 @@ int main(int argc, char *argv[]) {
 						// On ouvre le fichier listing de points 3 pour pouvoir le remplir.
 						ofstream listing3("./input/listingcliquable/listing3.list", ios::out | ios::app);
 						if(listing3) {
-							listing3 << x3 <<" "<< y3 <<" "<<"1"<< endl;
+							listing3 << setprecision (4)<< x3 <<" "<< y3 <<" "<<"1"<< endl;
 							listing3.close();
 						} 	
 						else {
@@ -217,7 +206,15 @@ int main(int argc, char *argv[]) {
 			}
 			if(e.type == SDL_KEYDOWN) {
 				if(e.key.keysym.sym == SDLK_f) {
-					finiClic = true;
+					if(comptimg1 < 7 || comptimg2 < 7 || comptimg3 < 7)
+					 {
+					 	std::cout << "Vous n'avez pas fini de rentrer les correspondances, continuez s'il vous plait " << std::endl;
+					 	std::cout << "(mininum 7 correspondances)" << std::endl;
+					 }
+					else{finiClic = true;}
+				}
+				if(e.key.keysym.sym == SDLK_c) {
+					modeChargementActif = true;   //Pour lancer le chargement
 				}
 			}
 
@@ -230,6 +227,42 @@ int main(int argc, char *argv[]) {
 			kn::loadMatrix(listClique1,"input/listingcliquable/listing1.list");
 			kn::loadMatrix(listClique2,"input/listingcliquable/listing2.list");
 			kn::loadMatrix(listClique3,"input/listingcliquable/listing3.list");
+			
+			
+			//Sauvegarde des listes
+			ofstream listing1("./input/listingcliquable/listing1.list", ios::out | ios::trunc);
+			if(listing1) {
+				listing1 <<"row "<<comptimg1<<std::endl;
+				listing1 <<"col 3"<<std::endl;
+				listing1 <<" "<<std::endl;
+				listing1 << listClique1 << std::endl;
+				listing1.close();
+			} 	
+			else {
+				cerr << "Impossible d'ouvrir la liste 1 !" << endl;
+			}
+			ofstream listing2("./input/listingcliquable/listing2.list", ios::out | ios::trunc);
+			if(listing2) {
+				listing2 <<"row "<<comptimg2<<std::endl;
+				listing2 <<"col 3"<<std::endl;
+				listing2 <<" "<<std::endl;
+				listing2 << listClique2 << std::endl;
+				listing2.close();
+			} 	
+			else {
+				cerr << "Impossible d'ouvrir la liste 2 !" << endl;
+			}
+			ofstream listing3("./input/listingcliquable/listing3.list", ios::out | ios::trunc);
+			if(listing3) {
+				listing3 <<"row "<<comptimg3<<std::endl;
+				listing3 <<"col 3"<<std::endl;
+				listing3 <<" "<<std::endl;
+				listing3 << listClique3 << std::endl;
+				listing3.close();
+			} 	
+			else {
+				cerr << "Impossible d'ouvrir la liste 3 !" << endl;
+			}
 			
 			imageOffset.x = 0;
 			imageOffset.y = 0;
@@ -247,7 +280,7 @@ int main(int argc, char *argv[]) {
 			std::cout << listClique3 << std::endl;
 			
 			
-			MatrixXd A = MatrixXd::Zero(comptimg1*4, 27);
+			MatrixXd A = MatrixXd::Zero(listClique1.rows()*4, 27);
 			
 			fillingA(A, listClique1, listClique2, listClique3);
 			
@@ -256,6 +289,54 @@ int main(int argc, char *argv[]) {
 			
 			
 			finiClic = false;
+		}
+		
+		if(modeChargementActif) {
+			kn::loadMatrix(list1,"input/listingchargeable/list1.list");
+			kn::loadMatrix(list2,"input/listingchargeable/list2.list");
+			kn::loadMatrix(list3,"input/listingchargeable/list3.list");
+			
+			// draw points on image1
+			for(int i=0; i<list1.rows(); ++i)
+				fill_circle(screen, list1(i,0), list1(i,1), 3, red);
+
+			// draw points on image2
+			for(int i=0; i<list2.rows(); ++i)
+				fill_circle(screen, list2(i,0)+image1->w, list2(i,1), 3, blue);
+
+			// draw points on image3
+			for(int i=0; i<list3.rows(); ++i)
+				fill_circle(screen, list3(i,0)+image1->w+image2->w, list3(i,1), 3, yellow);
+			
+			std::cout << "........Chargement des points effectué" <<std::endl;
+			SDL_Flip(screen);
+			
+			std::cout <<"Points de l'image 1 " << std::endl;
+			std::cout << list1 << std::endl;
+			std::cout <<"Points de l'image 2 " << std::endl;
+			std::cout << list2 << std::endl;
+			std::cout <<"Points de l'image 3 " << std::endl;
+			std::cout << list3 << std::endl;
+			
+			
+			MatrixXd A = MatrixXd::Zero(list1.rows()*4, 27);
+			
+			fillingA(A, list1, list2, list3);
+			
+			solvingAt(A, tensor);
+			
+			SDL_Delay(4000); // Une pause pour laisser afficher les points chargés avant la phase de transfert
+			
+			imageOffset.x = 0;
+			imageOffset.y = 0;
+			SDL_BlitSurface(image1, NULL, screen, &imageOffset);
+			imageOffset.x = image1->w;
+			SDL_BlitSurface(image2, NULL, screen, &imageOffset);
+			imageOffset.x = image1->w + image2->w;
+			SDL_BlitSurface(image3, NULL, screen, &imageOffset);
+			
+			modeChargementActif = false;
+			modeTransfertActif = true;
 		}
 		
 		if(modeTransfertActif) {

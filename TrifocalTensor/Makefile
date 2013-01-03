@@ -52,19 +52,19 @@ main.o : main.cpp MathIO.o draw.o Tensor.o
 
 clean :	
 	@echo "**************************"
-	@echo "CLEAN"
+	@echo "         CLEAN"
 	@echo "**************************"
 	$(RM) *~ $(OBJ) $(BIN)  
 
 bigclean :
 	@echo "**************************"
-	@echo "BIG CLEAN"
+	@echo "        BIG CLEAN"
 	@echo "**************************"
 	find . -name '*~' -exec rm -fv {} \;
 	$(RM) *~ $(OBJ) $(BIN) output/*
 
 tar : clean 
 	@echo "**************************"
-	@echo "TAR"
+	@echo "          TAR"
 	@echo "**************************"
 	cd .. && tar cvfz $(BACKUP) $(DIRNAME)
